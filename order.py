@@ -57,12 +57,6 @@ def defined_markofclass(data):
 
    return mark_of_class
  
-# def calculate_limits_reals(interval, next_interval):
-#     lower_limit, upper_limit = interval
-#     next_lower_limit, next_upper_limit = next_interval
-#     real_lower = (next_lower_limit + lower_limit) / 2
-#     real_upper = (next_upper_limit + upper_limit) / 2
-#     return real_lower, real_upper
 
 
 # Write your details here (numbers)
@@ -77,7 +71,7 @@ data  =  [
 
 print("Rango: ", calculate_range(data))
 print("Amplitud: ", calculate_amplitude(data))
-
+print("Marca de clase", defined_markofclass(data))
 
 
 intervals = defined_intervals(data)
