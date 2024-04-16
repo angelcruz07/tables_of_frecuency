@@ -8,7 +8,9 @@ def order_numbers(numbers):
 def calculate_number_class(data):
    n = len(data)
    k = 1 + math.log2(n)
-   return  round(k, 2)
+   if round(k) % 2 == 0:
+        k += 1
+   return  k
 
 # Range
 def calculate_range(data):
@@ -30,23 +32,28 @@ def calculate_amplitude(data):
 
 
 # Interval of class
-def defined_intervals(data):
-  num_intervals = calculate_number_class(data)
-  amplitude = calculate_amplitude(data)
+def defined_intervals(data, decimal_places = 2):
+    num_intervals = calculate_number_class(data)
+    amplitude = calculate_amplitude(data)
 
-  intervals = []
+    intervals = []
 
-  lower_limit = min(data)
+    lower_limit = min(data)
 
-  for i in range(int(num_intervals)):
-     upper_limit = lower_limit + amplitude
-     upper_limit = round(upper_limit, 2)
+    for i in range(int(num_intervals)):
+        upper_limit = lower_limit + amplitude
+        upper_limit = round(upper_limit, decimal_places)
 
-     intervals.append((lower_limit, upper_limit))
-        
-     lower_limit = upper_limit
-    
-  return intervals
+        # Redondear el límite superior hacia arriba
+        if decimal_places == 2  and lower_limit > 1:
+         upper_limit = math.ceil(upper_limit)
+
+        intervals.append((lower_limit, upper_limit ))
+# Todo: check the param sum 0.01
+        lower_limit = upper_limit + 0.01
+
+    return intervals
+
 
 # Mark of class
 def defined_markofclass(data):
@@ -62,19 +69,22 @@ def defined_markofclass(data):
     
    return mark_of_class_list
 
+# Absolute frequency
 def calculate_absolute_frequency(data):
-    numbers = sorted(data)
     intervals = defined_intervals(data)
 
     absolute_frequency = []
 
     for interval in intervals:
-       limit_lower, limit_upper = interval
-       count = sum(limit_lower <= num < limit_upper for num in numbers )
-       absolute_frequency.append(count)
+        limit_lower, limit_upper = interval
+        count = sum(limit_lower <= number <= limit_upper for number in data)
+        absolute_frequency.append(count)
 
     return absolute_frequency
-       
+
+
+# cumulative frequency  
+# Todo: Check the result
 def calculate_cumulative_frequency(data):
    absolute_frequency = calculate_absolute_frequency(data)
 
@@ -86,7 +96,16 @@ def calculate_cumulative_frequency(data):
       cumulative_frequency.append(cumulative_sum)
   
    return cumulative_frequency
+
+
+def calculate_complementary_frequency(data):
+   total_observations = len(data)
+   cumulative_frequency = calculate_cumulative_frequency(data)
    
+   complementary_frequency =[total_observations - freq for freq in cumulative_frequency]
+
+   return complementary_frequency
+
 
 # Write your details here (numbers)
 data  =  [
@@ -97,27 +116,26 @@ data  =  [
 	0.28, 0.45, 0.46, 0.53, 0.16, 0.57, 0.2, 0.82, 0.65, 0.72,0.99,0.2
 ]
 
+# data = [20, 25, 30, 35, 40, 45, 50, 55, 60, 65]
 
 print("Rango: ", calculate_range(data))
 print("Amplitud: ", calculate_amplitude(data))
 print("Marca de clase", defined_markofclass(data))
 print(order_numbers(data))
-print("frec abs",calculate_absolute_frequency(data))
-print(calculate_cumulative_frequency(data))
 
 
-intervals = defined_intervals(data)
+intervals = defined_intervals(data, decimal_places=2)
 marks_of_class = defined_markofclass(data)
 absolute_frequency = calculate_absolute_frequency(data)
 cumulative_frequency = calculate_cumulative_frequency(data)
-
+complementary_frequency = calculate_complementary_frequency(data)
 
 print("""
 | Clase |   Numero de intervalos  |  Marca de clase  |  Frecuencia absoluta  | Frecuencia acumulada  | Frecuencia complementaria |
 |       |-------------------------|                  |-----------------------|-----------------------|---------------------------|
 |       |  Superior  |  Inferior  |                  |  Simple  |  Relativa  | Simple   | Relativa   |    Simple   |   Relativa  |   
----------------------------------------------------------------------------------------------------------------------------------""")
+----------------------------------------------------------------------------------------------------------------------------------""")
 
-for i, (interval, mark_of_class, freq_abs, cumulative_frequency) in enumerate(zip(intervals, marks_of_class, absolute_frequency, cumulative_frequency), start=1):
+for i, ( interval, mark_of_class, freq_abs, cumulative_frequency, complementary_frequency) in enumerate(zip(intervals, marks_of_class, absolute_frequency, cumulative_frequency, complementary_frequency), start=1):
     print(
-        f"| {i:<5} | {interval[0]:<10} | {interval[1]:<10} | {mark_of_class:<16} | {freq_abs:<8} | {'{:0.2%}'.format(freq_abs / len(data)):<10} | {cumulative_frequency:<8} | {round(cumulative_frequency / len(data) * 100):<10} | ")
+        f"| {i:<5} | {interval[0]:<10} | {interval[1]:<10} | {mark_of_class:<16} | {freq_abs:<8} | {'{:0.2%}'.format(freq_abs / len(data)):<10} | {cumulative_frequency:<8} | {round(cumulative_frequency / len(data) * 100):<10} | {complementary_frequency:<11} | {round(complementary_frequency / len(data) * 100):<11} |")
