@@ -73,7 +73,20 @@ def calculate_absolute_frequency(data):
        count = sum(limit_lower <= num < limit_upper for num in numbers )
        absolute_frequency.append(count)
 
-    return absolute_frequency
+    return absolute_frequency 
+
+# Real limits function 
+def real_limits(data, gap):
+    intervals = defined_intervals(data)
+    real_limits = []
+
+    for i in range(len(intervals)):
+        lower_limit, upper_limit = intervals[i]
+        real_lower_limit = lower_limit - gap / 2
+        real_upper_limit = upper_limit + gap / 2
+        real_limits.append((round(real_lower_limit, 3), round(real_upper_limit, 3)))
+
+    return real_limits
        
 
 # Write your details here (numbers)
@@ -95,14 +108,19 @@ print(order_numbers(data))
 
 intervals = defined_intervals(data)
 marks_of_class = defined_markofclass(data)
-absolute_frequency = calculate_absolute_frequency(data)
+absolute_frequency = calculate_absolute_frequency(data)  
+real_limits_values = real_limits(data, gap=0.005)
+ 
+
+
 
 print("""
-| Clase |   Numero de intervalos  |  Marca de clase  |  Frecuencia absoluta  | Frecuencia acumulada |
-|       |-------------------------|                  |-----------------------|----------------------|
-|       |  Superior  |  Inferior  |                  |  Simple  |  Relativa  | Simple | Relativa    |   
------------------------------------------------------------------------------------------------------""")
-for i, (interval, mark_of_class, freq_abs) in enumerate(zip(intervals, marks_of_class, absolute_frequency), start=1):
+| Clase |   Numero de intervalos  | Limite real         |  Marca de clase  |  Frecuencia absoluta  | Frecuencia acumulada |
+|       |-------------------------|---------------------|                  |-----------------------|----------------------|
+|       |  Superior  |  Inferior  | Superior | Inferior |                  |  Simple  |  Relativa  | Simple | Relativa    |   
+-------------------------------------------------------------------------------------------------------------""")
+for i, (interval, mark_of_class, freq_abs, real_limit) in enumerate(zip(intervals, marks_of_class, absolute_frequency, real_limits_values), start=1):
+    real_limit_lower, real_limit_upper = real_limit
     print(
-        f"| {i:<5} | {interval[0]:<10} | {interval[1]:<10} | {mark_of_class:<16} | {freq_abs:<8} | {'{:0.2%}'.format(freq_abs / len(data)):<10} |"
+        f"| {i:<5} | {interval[0]:<10} | {interval[1]:<10} | {real_limit_lower:<10} | {real_limit_upper:<10} | {mark_of_class:<16} | {freq_abs:<8} | {'{:0.2%}'.format(freq_abs / len(data)):<10} |"
     )
