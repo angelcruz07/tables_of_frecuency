@@ -1,4 +1,5 @@
 import math
+import textwrap
 
 # Order List of numbers
 def order_numbers(numbers):
@@ -119,9 +120,17 @@ data  =  [
 # data = [20, 25, 30, 35, 40, 45, 50, 55, 60, 65]
 
 print("Rango: ", calculate_range(data))
+
 print("Amplitud: ", calculate_amplitude(data))
-print("Marca de clase", defined_markofclass(data))
-print(order_numbers(data))
+
+
+result = order_numbers(data)
+columns = 5
+wrapped_result = textwrap.wrap(', '.join(map(str, result)), width=columns*6)  # Asumiendo que cada número ocupa al menos 10 caracteres
+
+print("Numeros ordenados:")
+for row in wrapped_result:
+    print(row)
 
 
 intervals = defined_intervals(data, decimal_places=2)
@@ -131,11 +140,13 @@ cumulative_frequency = calculate_cumulative_frequency(data)
 complementary_frequency = calculate_complementary_frequency(data)
 
 print("""
-| Clase |   Numero de intervalos  |  Marca de clase  |  Frecuencia absoluta  | Frecuencia acumulada  | Frecuencia complementaria |
-|       |-------------------------|                  |-----------------------|-----------------------|---------------------------|
-|       |  Superior  |  Inferior  |                  |  Simple  |  Relativa  | Simple   | Relativa   |    Simple   |   Relativa  |   
-----------------------------------------------------------------------------------------------------------------------------------""")
+                                                Tabla de frecuencia
+--------------------------------------------------------------------------------------------------------------------------
+| Clase |   Numero de intervalos  |  Marca   |  Frecuencia absoluta  | Frecuencia acumulada  | Frecuencia complementaria |
+|       |-------------------------|    de    |-----------------------|-----------------------|---------------------------|
+|       |  Superior  |  Inferior  |  clase   |  Simple  |  Relativa  | Simple   | Relativa   |    Simple   |   Relativa  |   
+--------------------------------------------------------------------------------------------------------------------------""")
 
 for i, ( interval, mark_of_class, freq_abs, cumulative_frequency, complementary_frequency) in enumerate(zip(intervals, marks_of_class, absolute_frequency, cumulative_frequency, complementary_frequency), start=1):
     print(
-        f"| {i:<5} | {interval[0]:<10} | {interval[1]:<10} | {mark_of_class:<16} | {freq_abs:<8} | {'{:0.2%}'.format(freq_abs / len(data)):<10} | {cumulative_frequency:<8} | {round(cumulative_frequency / len(data) * 100):<10} | {complementary_frequency:<11} | {round(complementary_frequency / len(data) * 100, 2):<11} |")
+        f"| {i:<5} | {interval[0]:<10} | {interval[1]:<10} | {mark_of_class:<8} | {freq_abs:<8} | {'{:0.2%}'.format(freq_abs / len(data)):<10} | {cumulative_frequency:<8} | {round(cumulative_frequency / len(data) * 100):<10} | {complementary_frequency:<11} | {round(complementary_frequency / len(data) * 100, 2):<11} |")
