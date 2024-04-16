@@ -1,9 +1,8 @@
 import math
-from decimal import Decimal, DecimalException,  ROUND_HALF_UP
 
 # Order List of numbers
-def order_number(numbers):
-  return print(sorted(numbers))
+def order_numbers(numbers):
+  return sorted(numbers)
 
 # Class
 def calculate_number_class(data):
@@ -35,7 +34,7 @@ def defined_intervals(data):
   num_intervals = calculate_number_class(data)
   amplitude = calculate_amplitude(data)
 
-  intervals =[]
+  intervals = []
 
   lower_limit = min(data)
 
@@ -49,15 +48,33 @@ def defined_intervals(data):
     
   return intervals
 
+# Mark of class
 def defined_markofclass(data):
-   limit_lower = min(data)
-   limit_upper = max(data)
+   intervals = defined_intervals(data)
+   mark_of_class_list = []
+   
+   for interval in intervals:
+      lower_limit, upper_limit = interval
+      mark_of_class = (lower_limit + upper_limit) / 2
+      mark_of_class = round(mark_of_class, 2)
 
-   mark_of_class = limit_lower + limit_upper / 2
+      mark_of_class_list.append(mark_of_class)
+    
+   return mark_of_class_list
 
-   return mark_of_class
- 
+def calculate_absolute_frequency(data):
+    numbers = sorted(data)
+    intervals = defined_intervals(data)
 
+    absolute_frequency = []
+
+    for interval in intervals:
+       limit_lower, limit_upper = interval
+       count = sum(limit_lower <= num < limit_upper for num in numbers )
+       absolute_frequency.append(count)
+
+    return absolute_frequency
+       
 
 # Write your details here (numbers)
 data  =  [
@@ -72,15 +89,20 @@ data  =  [
 print("Rango: ", calculate_range(data))
 print("Amplitud: ", calculate_amplitude(data))
 print("Marca de clase", defined_markofclass(data))
+print(order_numbers(data))
+# print("frec abs",calculate_absolute_frequency(data))
 
 
 intervals = defined_intervals(data)
+marks_of_class = defined_markofclass(data)
+absolute_frequency = calculate_absolute_frequency(data)
+
 print("""
-| Clase |   Numero de intervalos  |
------------------------------------
-|       |  Superior  |  Inferior  |
------------------------------------""")
-for i, interval in enumerate(intervals, start=1):
+| Clase |   Numero de intervalos  |  Marca de clase  |  Frecuencia absoluta  | Frecuencia acumulada |
+|       |-------------------------|                  |-----------------------|----------------------|
+|       |  Superior  |  Inferior  |                  |  Simple  |  Relativa  | Simple | Relativa    |   
+-----------------------------------------------------------------------------------------------------""")
+for i, (interval, mark_of_class, freq_abs) in enumerate(zip(intervals, marks_of_class, absolute_frequency), start=1):
     print(
-        f"| {i:<5} | {interval[0]:<10} | {interval[1]:<10} |"
+        f"| {i:<5} | {interval[0]:<10} | {interval[1]:<10} | {mark_of_class:<16} | {freq_abs:<8} | {'{:0.2%}'.format(freq_abs / len(data)):<10} |"
     )
