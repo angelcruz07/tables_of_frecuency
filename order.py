@@ -120,15 +120,20 @@ print(calculate_cumulative_frequency(data))
 
 
 intervals = defined_intervals(data)
-marks_of_class = defined_markofclass(data)
-absolute_frequency = calculate_absolute_frequency(data)
+marks_of_class = defined_markofclass(data) 
+absolute_frequency = calculate_absolute_frequency(data)  
+real_limits_values = real_limits(data, gap=0.005)
+ 
+
+
 
 print("""
-| Clase |   Numero de intervalos  |  Marca de clase  |  Frecuencia absoluta  | Frecuencia acumulada |
-|       |-------------------------|                  |-----------------------|----------------------|
-|       |  Superior  |  Inferior  |                  |  Simple  |  Relativa  | Simple | Relativa    |   
------------------------------------------------------------------------------------------------------""")
-for i, (interval, mark_of_class, freq_abs) in enumerate(zip(intervals, marks_of_class, absolute_frequency), start=1):
+| Clase |   Numero de intervalos  | Limite real         |  Marca de clase  |  Frecuencia absoluta  | Frecuencia acumulada |
+|       |-------------------------|---------------------|                  |-----------------------|----------------------|
+|       |  Superior  |  Inferior  | Superior | Inferior |                  |  Simple  |  Relativa  | Simple | Relativa    |   
+-------------------------------------------------------------------------------------------------------------""")
+for i, (interval, mark_of_class, freq_abs, real_limit) in enumerate(zip(intervals, marks_of_class, absolute_frequency, real_limits_values), start=1):
+    real_limit_lower, real_limit_upper = real_limit
     print(
-        f"| {i:<5} | {interval[0]:<10} | {interval[1]:<10} | {mark_of_class:<16} | {freq_abs:<8} | {'{:0.2%}'.format(freq_abs / len(data)):<10} |"
+        f"| {i:<5} | {interval[0]:<10} | {interval[1]:<10} | {real_limit_lower:<10} | {real_limit_upper:<10} | {mark_of_class:<16} | {freq_abs:<8} | {'{:0.2%}'.format(freq_abs / len(data)):<10} |"
     )
