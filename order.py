@@ -88,6 +88,18 @@ def real_limits(data, gap):
 
     return real_limits
        
+def calculate_cumulative_frequency(data):
+   absolute_frequency = calculate_absolute_frequency(data)
+
+   cumulative_frequency = []
+   cumulative_sum = 0
+
+   for freq in absolute_frequency:
+      cumulative_sum += freq
+      cumulative_frequency.append(cumulative_sum)
+  
+   return cumulative_frequency
+   
 
 # Write your details here (numbers)
 data  =  [
@@ -103,24 +115,20 @@ print("Rango: ", calculate_range(data))
 print("Amplitud: ", calculate_amplitude(data))
 print("Marca de clase", defined_markofclass(data))
 print(order_numbers(data))
-# print("frec abs",calculate_absolute_frequency(data))
+print("frec abs",calculate_absolute_frequency(data))
+print(calculate_cumulative_frequency(data))
 
 
 intervals = defined_intervals(data)
 marks_of_class = defined_markofclass(data)
-absolute_frequency = calculate_absolute_frequency(data)  
-real_limits_values = real_limits(data, gap=0.005)
- 
-
-
+absolute_frequency = calculate_absolute_frequency(data)
 
 print("""
-| Clase |   Numero de intervalos  | Limite real         |  Marca de clase  |  Frecuencia absoluta  | Frecuencia acumulada |
-|       |-------------------------|---------------------|                  |-----------------------|----------------------|
-|       |  Superior  |  Inferior  | Superior | Inferior |                  |  Simple  |  Relativa  | Simple | Relativa    |   
--------------------------------------------------------------------------------------------------------------""")
-for i, (interval, mark_of_class, freq_abs, real_limit) in enumerate(zip(intervals, marks_of_class, absolute_frequency, real_limits_values), start=1):
-    real_limit_lower, real_limit_upper = real_limit
+| Clase |   Numero de intervalos  |  Marca de clase  |  Frecuencia absoluta  | Frecuencia acumulada |
+|       |-------------------------|                  |-----------------------|----------------------|
+|       |  Superior  |  Inferior  |                  |  Simple  |  Relativa  | Simple | Relativa    |   
+-----------------------------------------------------------------------------------------------------""")
+for i, (interval, mark_of_class, freq_abs) in enumerate(zip(intervals, marks_of_class, absolute_frequency), start=1):
     print(
-        f"| {i:<5} | {interval[0]:<10} | {interval[1]:<10} | {real_limit_lower:<10} | {real_limit_upper:<10} | {mark_of_class:<16} | {freq_abs:<8} | {'{:0.2%}'.format(freq_abs / len(data)):<10} |"
+        f"| {i:<5} | {interval[0]:<10} | {interval[1]:<10} | {mark_of_class:<16} | {freq_abs:<8} | {'{:0.2%}'.format(freq_abs / len(data)):<10} |"
     )
