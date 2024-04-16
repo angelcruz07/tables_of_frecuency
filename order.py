@@ -11,50 +11,40 @@ def calculate_number_class(data):
    k = 1 + math.log2(n)
    if round(k) % 2 == 0:
         k += 1
-   return  k
+   return  int(round(k))
 
 # Range
 def calculate_range(data):
    if len(data) == 0:
     return None
    else:
-        maximum = max(data)
-        minimum = min(data)
-        range_data = maximum - minimum 
-        return round(range_data, 2)
+        return round(max(data) - min(data), 2)
 
 # Amplitude
 def calculate_amplitude(data):
    range_number =calculate_range(data)
    count_class = calculate_number_class(data)
-
-   amplitude = range_number / count_class
-   return round(amplitude, 2)
-
+   return round(range_number / count_class, 2)
 
 # Interval of class
 def defined_intervals(data, decimal_places = 2):
     num_intervals = calculate_number_class(data)
     amplitude = calculate_amplitude(data)
-
     intervals = []
 
     lower_limit = min(data)
 
-    for i in range(int(num_intervals)):
-        upper_limit = lower_limit + amplitude
-        upper_limit = round(upper_limit, decimal_places)
+    for i in range(num_intervals):
+         upper_limit = round(lower_limit + amplitude, decimal_places)
 
         # Redondear el límite superior hacia arriba
-        if decimal_places == 2  and lower_limit > 1:
-         upper_limit = math.ceil(upper_limit)
+         if decimal_places == 2 and lower_limit > 1:
+            upper_limit = math.ceil(upper_limit)
 
-        intervals.append((lower_limit, upper_limit ))
-# Todo: check the param sum 0.01
-        lower_limit = upper_limit + 1
+         intervals.append((lower_limit, upper_limit))
+         lower_limit = upper_limit + 1  # Añadido un pequeño margen entre intervalos
 
     return intervals
-
 
 # Mark of class
 def defined_markofclass(data):
@@ -65,7 +55,6 @@ def defined_markofclass(data):
       lower_limit, upper_limit = interval
       mark_of_class = (lower_limit + upper_limit) / 2
       mark_of_class = round(mark_of_class, 2)
-
       mark_of_class_list.append(mark_of_class)
     
    return mark_of_class_list
@@ -73,7 +62,6 @@ def defined_markofclass(data):
 # Absolute frequency
 def calculate_absolute_frequency(data):
     intervals = defined_intervals(data)
-
     absolute_frequency = []
 
     for interval in intervals:
@@ -85,26 +73,16 @@ def calculate_absolute_frequency(data):
 
 
 # cumulative frequency  
-# Todo: Check the result
 def calculate_cumulative_frequency(data):
    absolute_frequency = calculate_absolute_frequency(data)
-
-   cumulative_frequency = []
-   cumulative_sum = 0
-
-   for freq in absolute_frequency:
-      cumulative_sum += freq
-      cumulative_frequency.append(cumulative_sum)
-  
+   cumulative_frequency = [sum(absolute_frequency[:i+1]) for i in range(len(absolute_frequency))]
    return cumulative_frequency
 
-
+# Complementary frequency
 def calculate_complementary_frequency(data):
    total_observations = len(data)
    cumulative_frequency = calculate_cumulative_frequency(data)
-   
    complementary_frequency =[total_observations - freq for freq in cumulative_frequency]
-
    return complementary_frequency
 
 # Real limits function 
@@ -119,6 +97,17 @@ def real_limits(data, gap):
         real_limits.append((round(real_lower_limit, 3), round(real_upper_limit, 3)))
 
     return real_limits
+
+def print_table():
+   print("""
+                                                      Tabla de frecuencia
+----------------------------------------------------------------------------------------------------------------------------------------------------
+| Clase |   Numero de intervalos  | Intervalos  reales       | Marca    |  Frecuencia absoluta  | Frecuencia acumulada  | Frecuencia complementaria |
+|       |-------------------------|--------------------------|   de     |-----------------------|-----------------------|---------------------------|
+|       |  Inferior  |  Superior  | Inferior    | Superior   |  clase   |  Simple  |  Relativa  | Simple   | Relativa   |    Simple   |   Relativa  |   
+----------------------------------------------------------------------------------------------------------------------------------------------------""")
+
+
 
 # Write your details here (numbers)
 # data  =  [
@@ -146,22 +135,6 @@ data = [
    29,11,22,9,43,36,10,4,43,30,43,29,24,29,19,18,9,36,35,10
 ]
 
-print ("Total de numeros" , len(data))
-
-print("Rango: ", calculate_range(data))
-
-print("Amplitud: ", calculate_amplitude(data))
-
-
-result = order_numbers(data)
-columns = 5
-wrapped_result = textwrap.wrap(', '.join(map(str, result)), width=columns*6)  # Asumiendo que cada número ocupa al menos 10 caracteres
-
-print("Numeros ordenados:")
-for row in wrapped_result:
-    print(row)
-
-
 intervals = defined_intervals(data, decimal_places=2)
 real_limits_values = real_limits(data, gap=0.5)
 marks_of_class = defined_markofclass(data)
@@ -169,16 +142,22 @@ absolute_frequency = calculate_absolute_frequency(data)
 cumulative_frequency = calculate_cumulative_frequency(data)
 complementary_frequency = calculate_complementary_frequency(data)
 
-
-print("""
-                                                Tabla de frecuencia
-----------------------------------------------------------------------------------------------------------------------------------------------------
-| Clase |   Numero de intervalos  | Intervalos  reales       | Marca    |  Frecuencia absoluta  | Frecuencia acumulada  | Frecuencia complementaria |
-|       |-------------------------|--------------------------|   de     |-----------------------|-----------------------|---------------------------|
-|       |  Inferior  |  Superior  | Inferior    | Superior   |  clase   |  Simple  |  Relativa  | Simple   | Relativa   |    Simple   |   Relativa  |   
-----------------------------------------------------------------------------------------------------------------------------------------------------""")
+print_table()
 
 for i, ( interval, mark_of_class, freq_abs, cumulative_frequency, complementary_frequency, real_limits_values) in enumerate(zip(intervals, marks_of_class, absolute_frequency, cumulative_frequency, complementary_frequency, real_limits_values), start=1):
     real_limit_lower, real_limit_upper = real_limits_values
     print(
         f"| {i:<5} | {interval[0]:<10} |  {interval[1]:<10} | {real_limit_lower:<10} | {real_limit_upper:<10} | {mark_of_class:<8} | {freq_abs:<8} | {'{:0.2%}'.format(freq_abs / len(data)):<10} | {cumulative_frequency:<8} | {round(cumulative_frequency / len(data) * 100):<10} | {complementary_frequency:<11} | {round(complementary_frequency / len(data) * 100, 2):<11} |")
+    
+# Data 
+print("Total de números:", len(data))
+print("Rango:", calculate_range(data))
+print("Amplitud:", calculate_amplitude(data))
+
+result = order_numbers(data)
+columns = 5
+wrapped_result = textwrap.wrap(', '.join(map(str, result)), width=columns*6)
+
+print("Números ordenados:")
+for row in wrapped_result:
+    print(row)
