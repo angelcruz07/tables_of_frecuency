@@ -1,5 +1,6 @@
 import math
 import textwrap
+import statistics
 
 # Order List of numbers
 def order_numbers(numbers):
@@ -98,6 +99,7 @@ def real_limits(data, gap):
 
     return real_limits
 
+
 def print_table():
    print("""
                                                       Tabla de frecuencia
@@ -129,11 +131,13 @@ def print_table():
 #    43, 66, 53, 61, 23, 37, 31, 34
 #    ]
 
-data = [
-   35,42,35,36,33,23,24,33,28,21,21,21,37,29,13,11,6,32,23,14,
-   18,17,24,19,28,21,31,13,12,38,14,23,45,19,33,34,28,25,26,7,
-   29,11,22,9,43,36,10,4,43,30,43,29,24,29,19,18,9,36,35,10
-]
+# data = [
+#    35,42,35,36,33,23,24,33,28,21,21,21,37,29,13,11,6,32,23,14,
+#    18,17,24,19,28,21,31,13,12,38,14,23,45,19,33,34,28,25,26,7,
+#    29,11,22,9,43,36,10,4,43,30,43,29,24,29,19,18,9,36,35,10
+# ]
+
+data = [1.7, 1.6, 1.9, 1.8 ,1.9 , 1.7 , 1.8, 1.6, 1.9, 1.7, 1.9, 1.8, 1.9, 1.8 , 1.6 , 1.8, 1.9 ,1.7, 1.9 ,1.8 ]
 
 intervals = defined_intervals(data, decimal_places=2)
 real_limits_values = real_limits(data, gap=0.5)
